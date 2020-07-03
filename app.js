@@ -9,14 +9,17 @@
             const keyText = key.textContent;
             const calculator = document.querySelector('.calculator');
 
-            if(!action){
+            if (!action) {
                 //This is a number clicked             
-                if(display.textContent === '0' || calculator.dataset.opkey){
+                if (display.textContent === '0' || calculator.dataset.opkey) {
                     calculator.dataset.opkey = '';
-                    display.textContent =  keyText;
-                }                       
-                else
-                    display.textContent = display.textContent + keyText; 
+                    display.textContent = keyText;
+                } else {
+                    if (!calculator.dataset.opkey && !display.textContent.includes('.'))
+                        display.textContent = keyText;
+                    else
+                        display.textContent = display.textContent + keyText;
+                }
             }
 
             if (action === 'add' || action === 'subtract' ||
@@ -34,13 +37,16 @@
                 calculator.dataset.firstValue = '';
             }
 
-            if(action === 'decimal'){
-                if(display.textContent === '0' || calculator.dataset.opkey){
+            if (action === 'decimal') {
+                if (display.textContent === '0' || calculator.dataset.opkey) {
                     calculator.dataset.opkey = '';
                     display.textContent = '0.';
-                }else if(!display.textContent.includes('.')){
-                    display.textContent = display.textContent + '.';
-                }                
+                } else if (!display.textContent.includes('.')) {
+                    if (!calculator.dataset.opkey)
+                        display.textContent = '0.';
+                    else
+                        display.textContent = display.textContent + '.';
+                }
             }
 
             if(action === 'calculate'){
@@ -48,8 +54,11 @@
                 const firstValue = calculator.dataset.firstValue;
                 const secondValue = display.textContent;
                 const operator = calculator.dataset.operator;
-                if(firstValue && operator)
+                if(firstValue && operator){
                     display.textContent = calculate(firstValue, secondValue, operator);
+                    calculator.dataset.operator = '';
+                }
+                    
             }
 
         });
